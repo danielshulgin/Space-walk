@@ -2,15 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class Joystick : MoveInput, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IMoveInput
 {
+    public Action<Vector2> OnMove { get; set; }
+
     public float Horizontal { get { return (snapX) ? SnapFloat(input.x, AxisOptions.Horizontal) : input.x; } }
     public float Vertical { get { return (snapY) ? SnapFloat(input.y, AxisOptions.Vertical) : input.y; } }
     public Vector2 Direction { get { return new Vector2(Horizontal, Vertical); } }
 
-    //public event Action<Vector2> OnMove = (vector2) => { };
+    public GameObject Movable;
 
     public float HandleRange
     {
@@ -45,6 +48,7 @@ public class Joystick : MoveInput, IPointerDownHandler, IDragHandler, IPointerUp
 
     protected virtual void Start()
     {
+        OnMove += (v) => { };
         HandleRange = handleRange;
         DeadZone = deadZone;
         baseRect = GetComponent<RectTransform>();
@@ -95,7 +99,7 @@ public class Joystick : MoveInput, IPointerDownHandler, IDragHandler, IPointerUp
         {
             if (magnitude > 1)
                 input = normalised;
-            OnMove(normalised);
+             OnMove(normalised);
         }
         else
         {
