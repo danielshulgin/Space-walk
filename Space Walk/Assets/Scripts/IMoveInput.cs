@@ -3,6 +3,6 @@ using System;
 
 public interface IMoveInput 
 {
-    Action<Vector2> OnMove { get; set; }
+    event Action<Vector2> OnMove;
 }
 

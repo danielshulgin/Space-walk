@@ -5,8 +5,8 @@ using System;
 using UnityEngine.Events;
 
 public class PCUserInput : MonoBehaviour, IMoveInput
-{ 
-    public Action<Vector2> OnMove { get; set; }
+{
+    public event Action<Vector2> OnMove;
 
     public void Start()
     {

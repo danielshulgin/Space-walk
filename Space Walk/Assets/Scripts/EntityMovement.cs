@@ -14,9 +14,9 @@ public class EntityMovement : MonoBehaviour
     [SerializeField]
     private float _maxLinearSpeed = 1f;
     [SerializeField]
-    private float _maxRotationSpeed = 1f;
-    [SerializeField]
     private float _rotationSpeed = 1f;
+    [SerializeField]
+    private float _maxRotationSpeed = 1f;
 
     private Rigidbody2D _rigidbody2D;
 
