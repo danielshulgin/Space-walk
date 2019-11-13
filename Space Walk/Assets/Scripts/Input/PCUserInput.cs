@@ -6,12 +6,8 @@ using UnityEngine.Events;
 
 public class PCUserInput : MonoBehaviour, IMoveInput
 {
-    public event Action<Vector2> OnMove;
-
-    public void Start()
-    {
-        OnMove += (v) => { };
-    }
+    //interface implementations IMoveInput
+    public event Action<Vector2> OnMove = (v) => { };
 
     private void Update()
     {

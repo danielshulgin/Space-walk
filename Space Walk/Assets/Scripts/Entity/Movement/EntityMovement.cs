@@ -66,11 +66,10 @@ public class EntityMovement : MonoBehaviour
 
     private void RotationTick(Vector2 direction)
     {
-        float angle = Mathf.Atan2(direction.y,
-            direction.x) * Mathf.Rad2Deg - 90;
-        transform.rotation =
-        Quaternion.RotateTowards(transform.rotation,
-            Quaternion.AngleAxis(angle, Vector3.forward),
-            _rotationSpeed * Time.deltaTime * 60);
+        float degreeAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
+        Quaternion quternionAngle = Quaternion.AngleAxis(degreeAngle, Vector3.forward);
+        
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, quternionAngle,
+            _rotationSpeed * Time.deltaTime);
     }
 }
