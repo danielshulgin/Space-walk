@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class PCUserInput : MonoBehaviour, IMoveInput
 {
     //interface implementations IMoveInput
-    public event Action<Vector2> OnMove = (v) => { };
+    public event Action<Vector2> OnMove = (v2) => { };
 
     private void Update()
     {
