@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 
 public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IMoveInput
 {
+    //interface implementations IMoveInput
     public event Action<Vector2> OnMove = (v2) => { };
 
     public float HandleRange
