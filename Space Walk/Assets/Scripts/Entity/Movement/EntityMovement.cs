@@ -48,18 +48,21 @@ public class EntityMovement : MonoBehaviour
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
     }
+
     private void OnEnable()
     {
         _moveInput = IMovementInputGO.GetComponent<IMoveInput>();
-        _moveInput.OnMove += MoveTick;
+        _moveInput.OnMove += MovementTick;
         _moveInput.OnMove += RotationTick;
     }
+
     private void OnDisable()
     {
-        _moveInput.OnMove -= MoveTick;
+        _moveInput.OnMove -= MovementTick;
         _moveInput.OnMove -= RotationTick;
     }
-    public void MoveTick(Vector2 direction)
+
+    public void MovementTick(Vector2 direction)
     {
         _rigidbody2D.velocity = _linearSpeed * direction;
     }
