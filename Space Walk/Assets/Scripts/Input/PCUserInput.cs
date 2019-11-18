@@ -1,21 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using Entity.Movement;
 using UnityEngine;
 using System;
 using UnityEngine.Events;
 
-public class PCUserInput : MonoBehaviour, IMoveInput
+namespace Input
 {
-    //interface implementations IMoveInput
-    public event Action<Vector2> OnMove = (v2) => { };
-
-    private void Update()
+    public class PcUserInput : MonoBehaviour, IMoveInput
     {
-        float horizontalDelta = Input.GetAxis("Horizontal");
-        float verticalDelta = Input.GetAxis("Vertical");
-        if (horizontalDelta != 0f || verticalDelta != 0f)
+        //interface implementations IMoveInput
+        public event Action<Vector2> OnMove = (v2) => { };
+        
+        private void Update()
         {
-            OnMove.Invoke(new Vector2(horizontalDelta, verticalDelta));
+            var horizontalDelta = UnityEngine.Input.GetAxis("Horizontal");  
+            var verticalDelta = UnityEngine.Input.GetAxis("Vertical");
+            const float tolerance = .001f;
+            if (Math.Abs(horizontalDelta) > tolerance || Math.Abs(verticalDelta) > tolerance)
+            {
+                OnMove.Invoke(new Vector2(horizontalDelta, verticalDelta));
+            }
         }
     }
 }

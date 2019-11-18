@@ -1,8 +1,11 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
+using UnityEngine;
 
-public interface IMoveInput 
+namespace Entity.Movement
 {
-    event Action<Vector2> OnMove;
+    public interface IMoveInput 
+    {
+        event Action<Vector2> OnMove;
+    }
 }
 
