@@ -24,9 +24,13 @@ public class EntityStuff : MonoBehaviour
         var gun = new Gun(_gunScriptableObject, Guid.NewGuid()); 
         var bulletStack = new BulletStack(_bulletScriptableObject,10, Guid.NewGuid());
         var bulletStack1 = new BulletStack(_bulletScriptableObject,10, Guid.NewGuid());
-        _inventory.AddItem(gun);
-        _inventory.AddItem(bulletStack);
-        _inventory.AddItem(bulletStack1);
+        DataBase.instance.AddItem(gun);
+        DataBase.instance.AddItem(bulletStack);
+        DataBase.instance.AddItem(bulletStack1);
+        
+        _inventory.AddItem(gun.id);
+        _inventory.AddItem(bulletStack.id);
+        _inventory.AddItem(bulletStack1.id);
         Debug.Log(_inventory);
     }
 
@@ -41,13 +45,13 @@ public class EntityStuff : MonoBehaviour
 
     public void Pick()
     {
-        //suck in animation 
+        //TODO suck in animation add by id 
         var itemComponent = pickables.Dequeue();
         var baseItem = itemComponent.Item;
         itemComponent.Serialize();
         if (baseItem != null)
         {
-            _inventory.AddItem(baseItem);
+            _inventory.AddItem(baseItem.id);
         }
     }
     

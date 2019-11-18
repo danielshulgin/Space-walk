@@ -9,7 +9,7 @@ namespace ItemSystem
 {
     public class Inventory
     {
-        private readonly List<BaseItem> _items;
+        private readonly List<Guid> _items;
         public Guid[] ItemsInSlots;
         public event Action<BaseItem> OnDropItemOnGround = (i) => { };
         public int MaxItemNumber { get; private set; }
@@ -17,26 +17,28 @@ namespace ItemSystem
         public Inventory(int maxItemNumber)
         {
             MaxItemNumber = maxItemNumber;
-            _items = new List<BaseItem>();
+            _items = new List<Guid>();
             ItemsInSlots = new Guid[maxItemNumber];
         }
 
-        public bool AddItem(BaseItem item)
+        public bool AddItem(Guid id)
         {
+            var item = DataBase.instance.GetItem(id);
             PutItemInEmptySlot(item);
             if (item.ScriptableObject is IStackable)
             {
                 return AddStackableItem(item);
             }
 
-            return AddSingleItem(item);
+            return AddSingleItem(item.id);
         }
 
+        //TODO replace BaseItem with id
         private bool AddStackableItem(BaseItem item)
         {
             var fromStack = item as ItemStack;
-            var toStack = _items.Find(baseItem => 
-                baseItem.ScriptableObject == item.ScriptableObject) as ItemStack;
+            var toStack = DataBase.instance.GetItem(_items.Find(baseItemId => 
+                DataBase.instance.GetItem(baseItemId).ScriptableObject == item.ScriptableObject)) as ItemStack;
 
             if (toStack != null && toStack.CanAccommodate(fromStack))
             {
@@ -44,14 +46,14 @@ namespace ItemSystem
                 OnInventoryChanged();
                 return true;
             }
-            return AddSingleItem(item);
+            return AddSingleItem(item.id);
         }
 
-        private bool AddSingleItem(BaseItem item)
+        private bool AddSingleItem(Guid id)
         {
             if (_items.Count < MaxItemNumber)
             {
-                _items.Add(item);
+                _items.Add(id);
                 OnInventoryChanged();
                 return true;
             }
@@ -60,8 +62,8 @@ namespace ItemSystem
 
         public BaseItem DropItem(Guid id)
         {
-            var dropItem = GetItem(id);
-            _items.Remove(dropItem);
+            var dropItem = DataBase.instance.GetItem(id);
+            _items.Remove(id);
             ItemsInSlots[Array.IndexOf(ItemsInSlots, id)] = Guid.Empty;
             return dropItem;
         }
@@ -71,18 +73,6 @@ namespace ItemSystem
             var dropItem = DropItem(id);
             OnDropItemOnGround(dropItem);
             return dropItem;
-        }
-        
-        public BaseItem GetItem(Guid id)
-        {
-            var dropItem = _items.Find(item => item.id == id);
-            return dropItem;
-        }
-        
-        public T GetItem<T>(Guid id) where T:BaseItem
-        {
-            var dropItem = _items.Find(item => item.id == id);
-            return dropItem as T;
         }
 
         private bool PutItemInEmptySlot(BaseItem baseItem)
@@ -103,13 +93,14 @@ namespace ItemSystem
 
         public bool MoveToAnotherSlot(int from, int to)
         {
-            if (GetItem(ItemsInSlots[from]) is ItemStack fromItemStack 
-                && GetItem(ItemsInSlots[to]) is ItemStack toItemStack)
+            if ((ItemsInSlots[from] != Guid.Empty && ItemsInSlots[to] != Guid.Empty) 
+                && DataBase.instance.GetItem(ItemsInSlots[from]) is ItemStack fromItemStack 
+                && DataBase.instance.GetItem(ItemsInSlots[to]) is ItemStack toItemStack)
             {
                 //TODO add checks
                 toItemStack.Accomodate(fromItemStack);
                 //TODO in single method
-                _items.Remove(fromItemStack);
+                _items.Remove(fromItemStack.id);
                 ItemsInSlots[from] = Guid.Empty;
                 OnInventoryChanged();
             }

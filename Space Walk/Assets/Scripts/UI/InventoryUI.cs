@@ -42,7 +42,7 @@ public class InventoryUI : MonoBehaviour
             var slotGameObject = Instantiate(slotPrefab, slotsParent.transform, true);
             if (itemId != Guid.Empty)
             {
-                var baseItem = entityStuff._inventory.GetItem(itemId);
+                var baseItem = DataBase.instance.GetItem(itemId);
                 itemSprite = baseItem.ScriptableObject.inventorySprite;
                 if (baseItem is ItemStack itemStack)
                 {
