@@ -7,18 +7,22 @@ using UnityEngine;
 
 namespace ItemSystem
 {
-    public class Inventory
+    public class ItemSet
     {
         private readonly List<Guid> _items;
-        public Guid[] ItemsInSlots;
+        public ItemSlot[] ItemsInSlots;
         public event Action<BaseItem> OnDropItemOnGround = (i) => { };
         public int MaxItemNumber { get; private set; }
         public event Action OnInventoryChanged = () => { };
-        public Inventory(int maxItemNumber)
+        public ItemSet(int maxItemNumber)
         {
             MaxItemNumber = maxItemNumber;
             _items = new List<Guid>();
-            ItemsInSlots = new Guid[maxItemNumber];
+            ItemsInSlots = new ItemSlot[maxItemNumber];
+            for (int i = 0; i < maxItemNumber; i++)
+            {
+                ItemsInSlots[i] = new ItemSlot();
+            }
         }
 
         public bool AddItem(Guid id)
@@ -64,7 +68,7 @@ namespace ItemSystem
         {
             var dropItem = DataBase.instance.GetItem(id);
             _items.Remove(id);
-            ItemsInSlots[Array.IndexOf(ItemsInSlots, id)] = Guid.Empty;
+            ItemsInSlots.ToList().Find(itemsInSlot => itemsInSlot.id == id).id = Guid.Empty;
             return dropItem;
         }
         
@@ -79,10 +83,9 @@ namespace ItemSystem
         {
             for (var i = 0; i < ItemsInSlots.Length; i++)
             {
-                var slotId = ItemsInSlots[i];
-                if (slotId == Guid.Empty)
+                if (ItemsInSlots[i].id == Guid.Empty)
                 {
-                    ItemsInSlots[i] = baseItem.id;
+                    ItemsInSlots[i].id = baseItem.id;
                     return true;
                 }
             }
@@ -90,29 +93,6 @@ namespace ItemSystem
             //TODO checks
             return false;
         }
-
-        public bool MoveToAnotherSlot(int from, int to)
-        {
-            if ((ItemsInSlots[from] != Guid.Empty && ItemsInSlots[to] != Guid.Empty) 
-                && DataBase.instance.GetItem(ItemsInSlots[from]) is ItemStack fromItemStack 
-                && DataBase.instance.GetItem(ItemsInSlots[to]) is ItemStack toItemStack)
-            {
-                //TODO add checks
-                toItemStack.Accomodate(fromItemStack);
-                //TODO in single method
-                _items.Remove(fromItemStack.id);
-                ItemsInSlots[from] = Guid.Empty;
-                OnInventoryChanged();
-            }
-            else
-            {
-                var tempFromGuid = ItemsInSlots[from];
-                ItemsInSlots[from] = ItemsInSlots[to];
-                ItemsInSlots[to] = tempFromGuid;
-            }
-            return true;
-        }
-        
         public override string ToString()
         {
             return _items.Aggregate("Inventory(", (current, item) => current + $" {item.ToString()}") +")";

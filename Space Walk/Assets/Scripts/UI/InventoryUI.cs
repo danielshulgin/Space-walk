@@ -1,67 +1,36 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using ItemSystem;
-using UI;
 using UnityEngine;
-using UnityEngine.UI;
-
+[RequireComponent(typeof(InventorySlotsUI))]
+[RequireComponent(typeof(CanvasGroup))]
 public class InventoryUI : MonoBehaviour
 {
-    [HideInInspector]
-    public EntityStuff entityStuff;
-
-    public GameObject player;
-    public GameObject slotPrefab;
-    public GameObject slotsParent;
-
-    private void Awake()
+    private InventorySlotsUI _inventorySlotsUi;
+    private CanvasGroup _canvasGroup;
+    private void Start()
     {
-        entityStuff = player.GetComponent<EntityStuff>();
-        //UpdateUI();
-        //TODO in on enable
-        entityStuff._inventory.OnInventoryChanged += UpdateUI;
+        _inventorySlotsUi = GetComponent<InventorySlotsUI>();
+        _canvasGroup = GetComponent<CanvasGroup>();
     }
 
-    public void OnEnable()
+    public void SetActive(bool active)
     {
-        UpdateUI();
-    }
-//TODO separate instantiation and update of the ui 
-    public void UpdateUI()
-    {
-        //TODO remove, replace with more optimal way
-        foreach (Transform child in slotsParent.transform) 
+        if (active)
         {
-            GameObject.Destroy(child.gameObject);
+            if (!_inventorySlotsUi.Initialized)
+            {
+                _inventorySlotsUi.InitializeSlots();
+            }
+            _canvasGroup.alpha = 1f;
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
         }
-        for (var i = 0; i < entityStuff._inventory.ItemsInSlots.Length; i++)
+        else
         {
-            var itemId = entityStuff._inventory.ItemsInSlots[i];
-            Sprite itemSprite = null;
-            var slotGameObject = Instantiate(slotPrefab, slotsParent.transform, true);
-            if (itemId != Guid.Empty)
-            {
-                var baseItem = DataBase.instance.GetItem(itemId);
-                itemSprite = baseItem.ScriptableObject.inventorySprite;
-                if (baseItem is ItemStack itemStack)
-                {
-                    var slotHandler = slotGameObject.GetComponent<SlotHandler>();
-                    slotHandler.SetNumber(itemStack.Number);
-                    slotHandler.SetActiveNumberText(true);
-                    //TODO disable when update
-                }
-                slotGameObject.GetComponentInChildren<CanvasGroup>().alpha = 1f;
-            }
-            else
-            {
-                slotGameObject.GetComponentInChildren<CanvasGroup>().alpha = 0f;
-            }
-
-            var slotUi = slotGameObject.GetComponentInChildren<ItemDragHandler>();
-            slotUi.slotIndex = i;
-            slotUi.inventoryUi = this;
-            slotGameObject.transform.GetChild(0).GetComponent<Image>().overrideSprite = itemSprite;
+            _canvasGroup.alpha = 0f;
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
         }
     }
 }

@@ -5,20 +5,17 @@ using UnityEngine.EventSystems;
 
 namespace UI
 {
-    [RequireComponent(typeof(RectTransform))]
-    [RequireComponent(typeof(CanvasGroup))]
     public class ItemDragHandler : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IDropHandler
     {
-        public static BaseItem selectedItem;
-        public static int selectedSlotIndex = -1;
-        private GameObject slotGameObject;
+        public event Action<SlotHandler> OnItemStartHandling = (sh) => { };
+        public event Action<SlotHandler> OnDropItemInSlot = (sh) => { };
+        
+        [SerializeField] private SlotHandler slotHandler;
+        [SerializeField] private RectTransform backgroundRectTransform;
+        
+        private GameObject _slotGameObject;
         private RectTransform _rectTransform;
         private CanvasGroup _canvasGroup;
-        public int slotIndex;
-        public InventoryUI inventoryUi;
-        
-        [SerializeField]private RectTransform backgroundRectTransform;
-        
 
         private Canvas _canvas;
         private Camera _cam;
@@ -26,22 +23,24 @@ namespace UI
         private Vector2 _lastPointerPosition;
         private Vector2 _startAnchoredPosition;
 
+
         protected void Start()
         {
-            slotGameObject = transform.parent.gameObject;
+            _slotGameObject = transform.parent.gameObject;
             _canvas = GetComponentInParent<Canvas>();
+            _canvasGroup = GetComponent<CanvasGroup>();
             _cam = _canvas.worldCamera;
             _rectTransform = GetComponent<RectTransform>();
             _startAnchoredPosition = _rectTransform.anchoredPosition;
-            _canvasGroup = GetComponent<CanvasGroup>();
+            
         }
 
         //interface implementations IPointerDownHandler
         public void OnPointerDown(PointerEventData eventData)
         {
-            _lastPointerPosition = eventData.position / _canvas.scaleFactor;
-            selectedSlotIndex = slotIndex;
             _canvasGroup.blocksRaycasts = false;
+            _lastPointerPosition = eventData.position / _canvas.scaleFactor;
+            OnItemStartHandling(slotHandler);
             transform.SetParent(_canvas.transform);
         }
 
@@ -59,17 +58,13 @@ namespace UI
         public void OnPointerUp(PointerEventData eventData)
         {
             _canvasGroup.blocksRaycasts = true;
-            transform.SetParent(slotGameObject.transform);
+            transform.SetParent(_slotGameObject.transform);
             _rectTransform.anchoredPosition = _startAnchoredPosition;
         }
 
         public void OnDrop(PointerEventData eventData)
         {
-            if (selectedSlotIndex != -1)
-            {
-                inventoryUi.entityStuff._inventory.MoveToAnotherSlot(ItemDragHandler.selectedSlotIndex, slotIndex);
-                inventoryUi.UpdateUI();
-            }
+            OnDropItemInSlot(slotHandler);
         }
     }
 }

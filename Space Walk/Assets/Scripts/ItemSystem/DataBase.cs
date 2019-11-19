@@ -9,9 +9,8 @@ public class DataBase : MonoBehaviour
     [HideInInspector]
     public static DataBase instance;
 
-    public Dictionary<Guid, BaseItem> items; 
+    public Dictionary<Guid, BaseItem> items;
     
-    //TODO first in scripts order
     private void Awake()
     {
         instance = this;
