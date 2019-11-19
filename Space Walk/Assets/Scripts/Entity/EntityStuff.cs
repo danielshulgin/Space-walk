@@ -11,6 +11,9 @@ public class EntityStuff : MonoBehaviour
     //TODO remove
     [SerializeField] private BulletScriptableObject _bulletScriptableObject;
     [SerializeField] private GunScriptableObject _gunScriptableObject;
+    
+    //TODO event for single item changed
+    public event Action OnEntityStuffChanged = () => { };
 
     public ItemSet _inventory { get; private set; }
     //TODO maybe remove public access
@@ -41,6 +44,7 @@ public class EntityStuff : MonoBehaviour
         HadSlot = new ItemSlot();
         BodySlot = new ItemSlot();
         LagsSlot = new ItemSlot();
+        _inventory.OnItemSetChanged += () => OnEntityStuffChanged();
     }
 
     public void DropItem(Guid itemId)

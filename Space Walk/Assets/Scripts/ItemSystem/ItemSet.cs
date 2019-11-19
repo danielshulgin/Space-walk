@@ -13,7 +13,7 @@ namespace ItemSystem
         public ItemSlot[] ItemsInSlots;
         public event Action<BaseItem> OnDropItemOnGround = (i) => { };
         public int MaxItemNumber { get; private set; }
-        public event Action OnInventoryChanged = () => { };
+        public event Action OnItemSetChanged = () => { };
         public ItemSet(int maxItemNumber)
         {
             MaxItemNumber = maxItemNumber;
@@ -47,7 +47,7 @@ namespace ItemSystem
             if (toStack != null && toStack.CanAccommodate(fromStack))
             {
                 toStack.Accomodate(fromStack);
-                OnInventoryChanged();
+                OnItemSetChanged();
                 return true;
             }
             return AddSingleItem(item.id);
@@ -58,7 +58,7 @@ namespace ItemSystem
             if (_items.Count < MaxItemNumber)
             {
                 _items.Add(id);
-                OnInventoryChanged();
+                OnItemSetChanged();
                 return true;
             }
             return false;
@@ -95,7 +95,8 @@ namespace ItemSystem
         }
         public override string ToString()
         {
-            return _items.Aggregate("Inventory(", (current, item) => current + $" {item.ToString()}") +")";
+            return _items.Aggregate("Inventory(", (current, item) => 
+                $"{current} {DataBase.instance.GetItem(item).ToString()}") +")";
         }
     }
 }

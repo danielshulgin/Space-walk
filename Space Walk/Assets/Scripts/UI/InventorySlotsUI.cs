@@ -30,6 +30,7 @@ public class InventorySlotsUI : MonoBehaviour
     {
         entityStuff = player.GetComponent<EntityStuff>();
         _bagSlotHandlers = new List<SlotHandler>();
+        entityStuff.OnEntityStuffChanged += UpdateBagSlots;
     }
     
     public void InitializeSlots()
