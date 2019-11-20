@@ -30,8 +30,8 @@ namespace Editor
         }
     }
 
-    [CustomEditor( typeof( BulletScriptableObject) )]
-    public class BulletScriptableObjectEditor : BaseScriptableObjectEditor
+    [CustomEditor( typeof( ItemStackScriptableObject) )]
+    public class ItemStackScriptableObjectEditor : BaseScriptableObjectEditor
     {
         private new void OnEnable()
         {

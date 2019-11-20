@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class InventoryBackground : MonoBehaviour,IDropHandler//,IPointerDownHandler
 {
-    public EntityStuff entityStuff;
+    public EntityStuffComponent entityStuff;
     public bool active = true;
     [SerializeField] private InventorySlotsUI inventoryUi;
     

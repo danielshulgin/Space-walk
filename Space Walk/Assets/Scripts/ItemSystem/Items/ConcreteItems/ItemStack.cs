@@ -4,12 +4,12 @@ namespace ItemSystem
 {
     public class ItemStack : BaseItem, IStackable
     {
-        public int Number { get; private set; }
+        public int Number { get; set; }
         public int MaxNumberInStack 
         {
             get
             {
-                if (ScriptableObject is BulletScriptableObject scriptableObject)
+                if (ScriptableObject is ItemStackScriptableObject scriptableObject)
                 {
                     return scriptableObject.maxNumberInStack;
                 }

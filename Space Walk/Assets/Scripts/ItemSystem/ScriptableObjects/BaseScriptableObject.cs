@@ -9,7 +9,7 @@ namespace ItemSystem
     {
         public string guidAsString;
         
-        public int maxNumberInStack = 1;
+        public string description;
         
         public GameObject prefab;
 

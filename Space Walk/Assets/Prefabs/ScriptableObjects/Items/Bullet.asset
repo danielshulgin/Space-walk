@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffe47096693549b6b0b03b6f3597931f, type: 3}
   m_Name: Bullet
   m_EditorClassIdentifier: 
-  guidAsString: ee9bee59-3a24-401f-9fe5-d37245581a55
-  maxNumberInStack: 64
+  guidAsString: 775e1870-5e98-4d53-9630-b859a0c72031
+  description: "\u0422\u0430 \u0441\u0430\u043C\u0430\u044F \u0441\u0435\u0440\u044F\u0431\u0440\u044F\u043D\u043D\u0430\u044F
+    \u043F\u0443\u043B\u044F"
   prefab: {fileID: 8100123245900335012, guid: 74d215956c89cef47a42d94530983687, type: 3}
-  inventorySprite: {fileID: 21300000, guid: 4cbc879550e5e374a925e2e0a84d6f3c, type: 3}
+  inventorySprite: {fileID: 21300000, guid: 085185b08a40a924985bc0e4176edea6, type: 3}
   sprite: {fileID: 21300000, guid: 8716a68235cf64d4f8a1d900d9978644, type: 3}
   maxNumberInStack: 64

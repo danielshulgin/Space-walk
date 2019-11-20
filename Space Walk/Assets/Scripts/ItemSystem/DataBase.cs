@@ -6,14 +6,16 @@ using UnityEngine;
 
 public class DataBase : MonoBehaviour
 {
-    [HideInInspector]
-    public static DataBase instance;
+    [HideInInspector] public static DataBase instance { get; private set; }
 
     public Dictionary<Guid, BaseItem> items;
     
     private void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
         items = new Dictionary<Guid, BaseItem>();
     }
 
