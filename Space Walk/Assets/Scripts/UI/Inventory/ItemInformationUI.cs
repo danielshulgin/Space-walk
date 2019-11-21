@@ -1,4 +1,5 @@
 ﻿using System;
+using Entity.Stuff;
 using ItemSystem;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -41,10 +42,10 @@ namespace UI
         
         public void Split()
         {
-            var numberInStack = (DataBase.instance.GetItem(entityStuff.GetSlotGuid(inventorySlotsUi.SelectedSlotHandler)) as ItemStack).Number;
+            var numberInStack = (DataBase.instance.GetItem(entityStuff.Stuff.GetSlotGuid(inventorySlotsUi.SelectedSlotHandler)) as ItemStack).Number;
             var toNumber = (int) (slider.value * numberInStack);
             var fromNumber = numberInStack - toNumber;
-            entityStuff.SplitBagItem(inventorySlotsUi.SelectedSlotHandler.SlotIndex,fromNumber,toNumber);
+            entityStuff.Stuff.SplitBagItem(inventorySlotsUi.SelectedSlotHandler.SlotIndex,fromNumber,toNumber);
             DeActivate();
         }
         

@@ -3,12 +3,17 @@ using UnityEngine;
 
 namespace ItemSystem
 {
-    public class BaseItem
+    public abstract class BaseItem
     {
         public Guid TypeId { get; }
+        
         public Guid id { get; }
         
         public string Name { get; }
+
+        public int MaxNumberInStack { get; }
+
+        public bool Stackable { get; }
 
         public BaseScriptableObject ScriptableObject
         {
@@ -31,6 +36,14 @@ namespace ItemSystem
             id = guid;
             ScriptableObject = baseScriptableObject;
             Name = baseScriptableObject.name;
+            MaxNumberInStack = baseScriptableObject.maxNumberInStack;
+            Stackable = baseScriptableObject.stackable;
+            AddToDataBase();
+        }
+
+        protected virtual void AddToDataBase()
+        {
+            DataBase.instance.AddItem(this);
         }
 
         public override string ToString()

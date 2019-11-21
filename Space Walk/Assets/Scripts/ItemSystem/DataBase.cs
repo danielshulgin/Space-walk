@@ -21,7 +21,11 @@ public class DataBase : MonoBehaviour
 
     public BaseItem GetItem(Guid id)
     {
-        return items[id];
+        if (items.ContainsKey(id))
+        {
+            return items[id];
+        }
+        return null;
     }
 
     public void AddItem(BaseItem item)

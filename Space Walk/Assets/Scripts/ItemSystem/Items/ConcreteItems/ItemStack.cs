@@ -2,7 +2,7 @@
 
 namespace ItemSystem
 {
-    public class ItemStack : BaseItem, IStackable
+    public class ItemStack : BaseItem
     {
         public int Number { get; set; }
         public int MaxNumberInStack 

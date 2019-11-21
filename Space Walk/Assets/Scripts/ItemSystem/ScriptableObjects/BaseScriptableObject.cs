@@ -16,8 +16,13 @@ namespace ItemSystem
         public Sprite inventorySprite;
         
         public Sprite sprite;
+
+        public int maxNumberInStack;
         
         private Guid _guid;
+        
+        public bool stackable;
+
         public Guid Guid
         {
             get

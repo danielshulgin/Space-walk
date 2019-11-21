@@ -9,142 +9,122 @@ namespace ItemSystem
 {
     public class ItemsSet
     {
-        private readonly List<Guid> _items;
-        public ItemSlot[] ItemsInSlots;
+        public List<Slot> Slots => new List<Slot>(_slots);
 
-        public int EmptyPlaces => ItemsInSlots.Count(itemsInSlot => itemsInSlot.id == Guid.Empty);
-        
-        public event Action<BaseItem> OnDropItemOnGround = (i) => { };
+        public int EmptyPlaces => _slots.Count(slot => slot.id != Guid.Empty);
         
         /// <summary>
-        /// sand int position in itemStack
+        /// sand int position of updated slot
         /// </summary>
         public event Action<int> OnUpdateSlot = (p) => { };
         
-        public event Action OnItemSetChanged = () => { };
+        private readonly List<Slot> _slots;
+
+        public int MaxItemNumber { get;}
         
-        public int MaxItemNumber { get; private set; }
         public ItemsSet(int maxItemNumber)
         {
             MaxItemNumber = maxItemNumber;
-            _items = new List<Guid>();
-            ItemsInSlots = new ItemSlot[maxItemNumber];
-            for (int i = 0; i < maxItemNumber; i++)
-            {
-                ItemsInSlots[i] = new ItemSlot();
-            }
-        }
-        
-        /// <returns>
-        /// return index of slot, if can't add return -1
-        /// </returns>
-        public int AddItem(Guid id)
-        {
-            var item = DataBase.instance.GetItem(id);
-            //var index = PutItemInEmptySlot(item);
-//            if (item is ItemStack itemStack)
-//            {
-//                if (AddStackableItem(itemStack))
-//                {
-//                    return -1;
-//                }
-//                //return -1;
-//            }
-
-            if (AddSingleItem(item.id))
-            {
-                return PutItemInEmptySlot(item);
-            }
+            _slots = new List<Slot>(); 
             
-            return -1;
+            for (var i = 0; i < maxItemNumber; i++)
+            {
+                _slots.Add(new Slot());
+            }
         }
         
-        private bool AddStackableItem(ItemStack fromStack)
+        public bool AddItem(Guid id, int number = 1)
         {
-            var itemWithSameTypeId = _items.Find(baseItemId => 
-                DataBase.instance.GetItem(baseItemId).ScriptableObject == fromStack.ScriptableObject);
-            if (itemWithSameTypeId != Guid.Empty)
+            if (PutItemInEmptySlot(id, number))
             {
-                var toStack = DataBase.instance.GetItem(itemWithSameTypeId) as ItemStack;
-                if (toStack != null && toStack.CanAccommodate(fromStack))
-                {
-                    toStack.Accomodate(fromStack);
-                    OnItemSetChanged();
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private bool AddSingleItem(Guid id)
-        {
-            if (_items.Count < MaxItemNumber)
-            {
-                _items.Add(id);
-                OnItemSetChanged();
                 return true;
             }
-            return false;
+            return PutItemInExistingSlot(id, number);
         }
 
         public bool Split(int slotIndex, int fromNumber, int toNumber)
         {
-            var slot = ItemsInSlots[slotIndex];
-            if (slot != null && EmptyPlaces > 0)
+            var itemId = _slots[slotIndex].id;
+            if (EmptyPlaces > 0)
             {
-                var item = DataBase.instance.GetItem(slot.id);
-                if (item is ItemStack itemStack 
-                    && ((fromNumber + toNumber) == itemStack.Number)
+                var item = DataBase.instance.GetItem(itemId);
+                if (item.Stackable 
+                    && ((fromNumber + toNumber) == _slots[slotIndex].number)
                     && fromNumber!= 0 
                     && toNumber!= 0)
                 {
-                    itemStack.Number = fromNumber;
-                    var newItem = new ItemStack(item.ScriptableObject, Guid.NewGuid(), toNumber);
-                    DataBase.instance.AddItem(newItem);
-                    var indexOfNewSlot = AddItem(newItem.id);
-                    if (indexOfNewSlot == -1)
-                        return false;
-                    
+                    _slots[slotIndex].number = fromNumber;
+                    PutItemInEmptySlot(itemId);
+                    AddItem(itemId);
                     OnUpdateSlot(slotIndex);
-                    OnUpdateSlot(indexOfNewSlot);
                     return true;
                 }
             }
             return false;
         }
 
-        public BaseItem DropItem(Guid id)
+        public void RemoveItem(Guid id, int number = 1)
         {
             var dropItem = DataBase.instance.GetItem(id);
-            _items.Remove(id);
-            ItemsInSlots.ToList().Find(itemsInSlot => itemsInSlot.id == id).id = Guid.Empty;
-            return dropItem;
-        }
-        
-        public BaseItem DropItemOnGround(Guid id)
-        {
-            var dropItem = DropItem(id);
-            OnDropItemOnGround(dropItem);
-            return dropItem;
+            _slots.Find(slot => slot.id == id).number = 0;
+            _slots.Find(slot => slot.id ==id).id = Guid.Empty;
         }
 
-        private int PutItemInEmptySlot(BaseItem baseItem)
+        public void RemoveItem(int slotIndex)
         {
-            for (var i = 0; i < ItemsInSlots.Length; i++)
+            _slots[slotIndex].number = 0;
+            _slots[slotIndex].id = Guid.Empty;
+        }
+
+        private bool PutItemInEmptySlot(Guid id, int number = 1)
+        {
+            for (var i = 0; i < _slots.Count; i++)
             {
-                if (ItemsInSlots[i].id == Guid.Empty)
+                if (_slots[i].id == Guid.Empty)
                 {
-                    ItemsInSlots[i].id = baseItem.id;
-                    return i;
+                    _slots[i].id = id;
+                    _slots[i].number = number;
+                    OnUpdateSlot(i);
+                    return true;
                 }
             }
-            return -1;
+            return false;
+        }
+        
+        private bool PutItemInExistingSlot(Guid id, int number)
+        {
+            var item = DataBase.instance.GetItem(id);
+            if (!item.Stackable) 
+                return false;
+            var canAccomodateItemsNumber = 0;
+            var maxNumber = DataBase.instance.GetItem(id).MaxNumberInStack;
+            for (var i = 0; i < _slots.Count; i++)
+            {
+                if (_slots[i].id == id)
+                {
+                    canAccomodateItemsNumber += maxNumber - _slots[i].number;
+                }
+            }
+            if (canAccomodateItemsNumber <= number)
+            {
+                for (var i = 0; i < _slots.Count; i++)
+                {
+                    if (_slots[i].id == id)
+                    {
+                        var emptyPlace = maxNumber - _slots[i].number;
+                        _slots[i].number += emptyPlace;
+                        OnUpdateSlot(i);
+                    }
+                }
+                return true;
+            }
+            return false;
         }
         
         public override string ToString()
         {
-            return _items.Aggregate("Inventory(", (current, item) => 
-                $"{current} {DataBase.instance.GetItem(item).ToString()}") +")";
+            return _slots.Aggregate("Inventory[", (current, slot) => 
+                $"{current} {DataBase.instance.GetItem(slot.id).ToString()} - {slot.number}") +"]";
         }
     }
 }
