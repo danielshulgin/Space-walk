@@ -1230,7 +1230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunScriptableObject: {fileID: 11400000, guid: c1443e6dd43cb524e9944f915ecd6581,
     type: 2}
-  _bulletScriptableObject: {fileID: 11400000, guid: c1443e6dd43cb524e9944f915ecd6581,
+  _bulletScriptableObject: {fileID: 11400000, guid: d874cd4e519572d44903d8bbdb7af327,
     type: 2}
 --- !u!1 &1234800349
 GameObject:

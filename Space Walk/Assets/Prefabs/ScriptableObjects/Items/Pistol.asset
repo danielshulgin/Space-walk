@@ -18,4 +18,6 @@ MonoBehaviour:
   prefab: {fileID: 8100123245900335012, guid: 74d215956c89cef47a42d94530983687, type: 3}
   inventorySprite: {fileID: 21300000, guid: b8467ea5fbaf9ba42908de6411bd443d, type: 3}
   sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  maxNumberInStack: 0
+  stackable: 0
   damage: 0

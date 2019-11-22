@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ItemSystem;
+using ItemSystem.Items.ItemCollections;
 using ItemSystem.ScriptableObjects.ConcreteScriptableObjects;
 using UI;
 using UnityEngine;
@@ -43,16 +44,16 @@ namespace Entity.Stuff
         {
             if (firstSlotType == SlotType.Bag)
             {
-                _bag.SwapSlots(firstSlotIndex,_slots.Find(slot => slot.slotType == secondSlotType));
+                _bag.SwapSlots(firstSlotIndex,_slots.Find(slot => slot.Type == secondSlotType));
                 return true;
             }
             if (secondSlotType == SlotType.Bag)
             {
-                _bag.SwapSlots(secondSlotIndex,_slots.Find(slot => slot.slotType == firstSlotType));
+                _bag.SwapSlots(secondSlotIndex,_slots.Find(slot => slot.Type == firstSlotType));
                 return true;
             }
-            _slots.Find(slot => slot.slotType == firstSlotType)
-                .Swap(_slots.Find(slot => slot.slotType == secondSlotType));
+            _slots.Find(slot => slot.Type == firstSlotType)
+                .Swap(_slots.Find(slot => slot.Type == secondSlotType));
             return true;
         }
         

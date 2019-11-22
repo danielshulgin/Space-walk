@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Boo.Lang.Environments;
+using ItemSystem.Items.ItemCollections;
 using UI;
 using UnityEditor;
 using UnityEngine;
@@ -10,21 +11,19 @@ namespace ItemSystem
 {
     public class ItemsSet
     {
-        public List<Slot> Slots => new List<Slot>(_slots);
-
-        public int EmptyPlaces => _slots.Count(slot => slot.id != Guid.Empty);
-        
-        public SlotType Type { get;}
-
         /// <summary>
         /// sand int index of updated slot
         /// </summary>
         public event Action<int> OnUpdateSlot = (p) => { };
+
+        public int EmptyPlaces => _slots.Count(slot => slot.id != Guid.Empty);
+        
+        public SlotType Type { get;}
+        
+        public int MaxSlotNumber { get;}
         
         private readonly List<Slot> _slots;
 
-        public int MaxSlotNumber { get;}
-        
         public ItemsSet(int maxSlotNumber, SlotType setType)
         {
             MaxSlotNumber = maxSlotNumber;
@@ -77,7 +76,7 @@ namespace ItemSystem
             _slots[slotIndex].Reset();
         }
 
-        public void SwapSlots(int firstIndex, int secondIndex)
+        public void SwapSlotsInSet(int firstIndex, int secondIndex)
         {
             _slots[firstIndex].Swap(_slots[secondIndex]);
         }
