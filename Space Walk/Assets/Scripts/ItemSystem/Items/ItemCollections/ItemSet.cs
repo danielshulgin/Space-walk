@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Boo.Lang.Environments;
+using UI;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,23 +14,26 @@ namespace ItemSystem
 
         public int EmptyPlaces => _slots.Count(slot => slot.id != Guid.Empty);
         
+        public SlotType Type { get;}
+
         /// <summary>
-        /// sand int position of updated slot
+        /// sand int index of updated slot
         /// </summary>
         public event Action<int> OnUpdateSlot = (p) => { };
         
         private readonly List<Slot> _slots;
 
-        public int MaxItemNumber { get;}
+        public int MaxSlotNumber { get;}
         
-        public ItemsSet(int maxItemNumber)
+        public ItemsSet(int maxSlotNumber, SlotType setType)
         {
-            MaxItemNumber = maxItemNumber;
-            _slots = new List<Slot>(); 
+            MaxSlotNumber = maxSlotNumber;
+            _slots = new List<Slot>();
+            Type = setType;
             
-            for (var i = 0; i < maxItemNumber; i++)
+            for (var i = 0; i < maxSlotNumber; i++)
             {
-                _slots.Add(new Slot());
+                _slots.Add(new Slot(setType, i));
             }
         }
         
@@ -65,15 +69,22 @@ namespace ItemSystem
 
         public void RemoveItem(Guid id, int number = 1)
         {
-            var dropItem = DataBase.instance.GetItem(id);
-            _slots.Find(slot => slot.id == id).number = 0;
-            _slots.Find(slot => slot.id ==id).id = Guid.Empty;
+            _slots.Find(slot => slot.id == id).Reset();
         }
 
         public void RemoveItem(int slotIndex)
         {
-            _slots[slotIndex].number = 0;
-            _slots[slotIndex].id = Guid.Empty;
+            _slots[slotIndex].Reset();
+        }
+
+        public void SwapSlots(int firstIndex, int secondIndex)
+        {
+            _slots[firstIndex].SwapWithAnotherSlot(_slots[secondIndex]);
+        }
+        
+        public void SwapSlots(int index, Slot slot)
+        {
+            _slots[index].SwapWithAnotherSlot(slot);
         }
 
         private bool PutItemInEmptySlot(Guid id, int number = 1)
@@ -82,11 +93,19 @@ namespace ItemSystem
             {
                 if (_slots[i].id == Guid.Empty)
                 {
-                    _slots[i].id = id;
-                    _slots[i].number = number;
-                    OnUpdateSlot(i);
-                    return true;
+                    return PutItemInEmptySlotWithIndex(i, id, number);
                 }
+            }
+            return false;
+        }
+        
+        private bool PutItemInEmptySlotWithIndex(int slotIndex, Guid id, int number = 1)
+        {
+            if (slotIndex < MaxSlotNumber && _slots[slotIndex].id == Guid.Empty)
+            {
+                _slots[slotIndex].SetSlot(id, number);
+                OnUpdateSlot(slotIndex);
+                return true;
             }
             return false;
         }
@@ -120,11 +139,16 @@ namespace ItemSystem
             }
             return false;
         }
+
+        public SlotUIData GetSlotDescription(int index)
+        {
+            return _slots[index].SlotUiData;
+        }
         
         public override string ToString()
         {
-            return _slots.Aggregate("Inventory[", (current, slot) => 
-                $"{current} {DataBase.instance.GetItem(slot.id).ToString()} - {slot.number}") +"]";
+            return _slots.Aggregate("Inventory[", (current, slot) =>slot.id != Guid.Empty? 
+                $"{current} {DataBase.instance.GetItem(slot.id).ToString()} - {slot.number}":current) +"]";
         }
     }
 }

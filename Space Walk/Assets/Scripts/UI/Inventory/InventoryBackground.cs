@@ -14,6 +14,6 @@ public class InventoryBackground : MonoBehaviour,IDropHandler//,IPointerDownHand
     
     public void OnDrop(PointerEventData eventData)
     {
-        inventoryUi.DropSelectedItem();
+        /*inventoryUi.DropSelectedItem();*/
     }
 }

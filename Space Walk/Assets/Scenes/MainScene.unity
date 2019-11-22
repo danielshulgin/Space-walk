@@ -1228,11 +1228,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 452180ce66894414b8b04d1fa0a8ca79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bulletScriptableObject: {fileID: 11400000, guid: d874cd4e519572d44903d8bbdb7af327,
+  gunScriptableObject: {fileID: 11400000, guid: c1443e6dd43cb524e9944f915ecd6581,
     type: 2}
-  _gunScriptableObject: {fileID: 11400000, guid: c1443e6dd43cb524e9944f915ecd6581,
+  _bulletScriptableObject: {fileID: 11400000, guid: c1443e6dd43cb524e9944f915ecd6581,
     type: 2}
-  MaxNumberInInventory: 10
 --- !u!1 &1234800349
 GameObject:
   m_ObjectHideFlags: 0

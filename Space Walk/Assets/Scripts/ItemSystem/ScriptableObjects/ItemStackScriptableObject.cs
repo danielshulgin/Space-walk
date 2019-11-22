@@ -6,6 +6,6 @@ namespace ItemSystem
     [CreateAssetMenu(fileName = "Bullet", menuName = "ScriptableObjects/BulletScriptableObject", order = 1)]
     public class ItemStackScriptableObject : BaseScriptableObject
     {
-        public int maxNumberInStack;
+
     }
 }

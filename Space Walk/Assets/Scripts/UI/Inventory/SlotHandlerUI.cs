@@ -29,9 +29,31 @@ public class SlotHandlerUI : MonoBehaviour
         this.slotIndex = slotIndex;
     }
     
+    public void UpdateSlot(SlotUIData slotData)
+    {
+        if (!slotData.Empty)
+        {
+            EnableSlotImage(slotData.Sprite);
+            if (slotData.Stackable)
+            {
+                SetNumber(slotData.Number);
+                SetActiveNumberText(true);
+            }
+            else
+            {
+                SetActiveNumberText(false);
+            }
+        }
+        else
+        {
+            DisableSlotImage();
+        }
+    }
+    
     public void SetActiveNumberText(bool active)
     {
         slotPanel.SetActive(active);
+        
     }
 
     public void EnableSlotImage(Sprite itemSprite)

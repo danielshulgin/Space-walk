@@ -1,4 +1,5 @@
 ﻿using System;
+using UI;
 using UnityEngine;
 
 namespace ItemSystem
@@ -8,12 +9,12 @@ namespace ItemSystem
         public Guid TypeId { get; }
         
         public Guid id { get; }
-        
-        public string Name { get; }
 
-        public int MaxNumberInStack { get; }
+        public string Name => ScriptableObject.name;
 
-        public bool Stackable { get; }
+        public int MaxNumberInStack => ScriptableObject.maxNumberInStack;
+
+        public bool Stackable => _scriptableObject.stackable;
 
         public BaseScriptableObject ScriptableObject
         {
@@ -35,13 +36,10 @@ namespace ItemSystem
             TypeId = baseScriptableObject.Guid;
             id = guid;
             ScriptableObject = baseScriptableObject;
-            Name = baseScriptableObject.name;
-            MaxNumberInStack = baseScriptableObject.maxNumberInStack;
-            Stackable = baseScriptableObject.stackable;
             AddToDataBase();
         }
 
-        protected virtual void AddToDataBase()
+        public virtual void AddToDataBase()
         {
             DataBase.instance.AddItem(this);
         }

@@ -24,7 +24,7 @@ namespace UI
 
         public void Activate(Guid id)
         {
-            _canvasGroup.alpha = 1f;
+            /*_canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
             descriptionText.text = DataBase.instance.GetItem(id).ScriptableObject.description;
             var item = DataBase.instance.GetItem(id);
@@ -37,16 +37,16 @@ namespace UI
             {
                 splitButton.gameObject.SetActive(false);
                 slider.gameObject.SetActive(false);
-            }
+            }*/
         }
         
         public void Split()
         {
-            var numberInStack = (DataBase.instance.GetItem(entityStuff.Stuff.GetSlotGuid(inventorySlotsUi.SelectedSlotHandler)) as ItemStack).Number;
+            /*var numberInStack = (DataBase.instance.GetItem(entityStuff.Stuff.GetSlotGuid(inventorySlotsUi.SelectedSlotHandler)) as ItemStack).Number;
             var toNumber = (int) (slider.value * numberInStack);
             var fromNumber = numberInStack - toNumber;
             entityStuff.Stuff.SplitBagItem(inventorySlotsUi.SelectedSlotHandler.SlotIndex,fromNumber,toNumber);
-            DeActivate();
+            DeActivate();*/
         }
         
         public void DeActivate()

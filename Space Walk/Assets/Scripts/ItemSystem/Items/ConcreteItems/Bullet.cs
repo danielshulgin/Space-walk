@@ -5,19 +5,24 @@ namespace ItemSystem
     public class Bullet : BaseItem
     {
         //TODO add Scriptable Objcet for stack, remove scriptable object from constructor
-        protected static Guid id;
-        public Bullet(ItemStackScriptableObject baseScriptableObject, int count, Guid id): base(baseScriptableObject, id)
+        protected static Guid globalId;
+
+        public Guid id
         {
-            if (id == Guid.Empty)
+            get => globalId;
+        }
+        
+        public Bullet(BaseScriptableObject baseScriptableObject, Guid id): base(baseScriptableObject, id)
+        {
+            if (globalId == Guid.Empty)
             {
-                Bullet.id = id;
+                Bullet.globalId = id;
             }
         }
 
-        protected override void AddToDataBase()
+        public override void AddToDataBase()
         {
-            
-            if (DataBase.instance.GetItem(id) != null)
+            if (DataBase.instance.GetItem(id) == null)
             {
                 DataBase.instance.AddItem(this);
             }
