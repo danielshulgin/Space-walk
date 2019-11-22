@@ -41,7 +41,7 @@ public class Slot
         id = Guid.Empty;
     }
 
-    public void SwapWithAnotherSlot(Slot anotherSLot)
+    public void Swap(Slot anotherSLot)
     {
         var anotherSlotNumber = anotherSLot.number;
         var anotherSlotId = anotherSLot.id;

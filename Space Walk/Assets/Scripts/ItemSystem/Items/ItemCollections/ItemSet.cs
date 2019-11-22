@@ -79,12 +79,12 @@ namespace ItemSystem
 
         public void SwapSlots(int firstIndex, int secondIndex)
         {
-            _slots[firstIndex].SwapWithAnotherSlot(_slots[secondIndex]);
+            _slots[firstIndex].Swap(_slots[secondIndex]);
         }
         
         public void SwapSlots(int index, Slot slot)
         {
-            _slots[index].SwapWithAnotherSlot(slot);
+            _slots[index].Swap(slot);
         }
 
         private bool PutItemInEmptySlot(Guid id, int number = 1)
@@ -116,12 +116,12 @@ namespace ItemSystem
             if (!item.Stackable) 
                 return false;
             var canAccomodateItemsNumber = 0;
-            var maxNumber = DataBase.instance.GetItem(id).MaxNumberInStack;
+            var maxNumberInStack = DataBase.instance.GetItem(id).MaxNumberInStack;
             for (var i = 0; i < _slots.Count; i++)
             {
                 if (_slots[i].id == id)
                 {
-                    canAccomodateItemsNumber += maxNumber - _slots[i].number;
+                    canAccomodateItemsNumber += maxNumberInStack - _slots[i].number;
                 }
             }
             if (canAccomodateItemsNumber <= number)
@@ -130,7 +130,7 @@ namespace ItemSystem
                 {
                     if (_slots[i].id == id)
                     {
-                        var emptyPlace = maxNumber - _slots[i].number;
+                        var emptyPlace = maxNumberInStack - _slots[i].number;
                         _slots[i].number += emptyPlace;
                         OnUpdateSlot(i);
                     }

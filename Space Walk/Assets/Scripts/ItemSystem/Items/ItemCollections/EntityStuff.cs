@@ -52,7 +52,7 @@ namespace Entity.Stuff
                 return true;
             }
             _slots.Find(slot => slot.slotType == firstSlotType)
-                .SwapWithAnotherSlot(_slots.Find(slot => slot.slotType == secondSlotType));
+                .Swap(_slots.Find(slot => slot.slotType == secondSlotType));
             return true;
         }
         
