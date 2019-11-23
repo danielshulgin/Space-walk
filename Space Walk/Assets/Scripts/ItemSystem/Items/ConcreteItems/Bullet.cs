@@ -4,7 +4,6 @@ namespace ItemSystem
 {
     public class Bullet : BaseItem
     {
-        //TODO add Scriptable Objcet for stack, remove scriptable object from constructor
         protected static Guid globalId;
 
         public Guid id

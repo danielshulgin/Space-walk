@@ -10,10 +10,6 @@ namespace Entity.Stuff
 {
     public class EntityStuff
     {
-        //TODO remove
-        [SerializeField] private ItemStackScriptableObject _bulletScriptableObject;
-        [SerializeField] private GunScriptableObject _gunScriptableObject;
-
         public event Action<SlotType, int> OnUpdateSlot = (st, index) => { };
 
         public event Action<Guid, int> OnDropItem = (id, number) => { };
