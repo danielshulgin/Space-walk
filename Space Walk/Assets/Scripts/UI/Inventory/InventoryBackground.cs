@@ -10,10 +10,10 @@ public class InventoryBackground : MonoBehaviour,IDropHandler//,IPointerDownHand
 {
     public EntityStuffComponent entityStuff;
     public bool active = true;
-    [SerializeField] private InventorySlotsUI inventoryUi;
+    [SerializeField] private InventorySlotsUI InventorySlotsUI;
     
     public void OnDrop(PointerEventData eventData)
     {
-        /*inventoryUi.DropSelectedItem();*/
+        InventorySlotsUI.DropSelectedItem();
     }
 }

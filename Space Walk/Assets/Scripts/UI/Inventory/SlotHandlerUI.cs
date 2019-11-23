@@ -12,11 +12,11 @@ public class SlotHandlerUI : MonoBehaviour
     public TextMeshProUGUI text;
     public GameObject slotPanel;
     
-    public SlotType SlotType => slotType;
-    [SerializeField] private SlotType slotType;
+    public SlotType Type => type;
+    [SerializeField] private SlotType type;
     
-    public int SlotIndex => slotIndex;
-    [SerializeField] private int slotIndex;
+    public int Index => index;
+    [SerializeField] private int index;
     
     public void SetNumber(int number)
     {
@@ -25,8 +25,8 @@ public class SlotHandlerUI : MonoBehaviour
     
     public void Initialize(SlotType slotType, int slotIndex = 0)
     {
-        this.slotType = slotType;
-        this.slotIndex = slotIndex;
+        this.type = slotType;
+        this.index = slotIndex;
     }
     
     public void UpdateSlot(SlotUIData slotData)

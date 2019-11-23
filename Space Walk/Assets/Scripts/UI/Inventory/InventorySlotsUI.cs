@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 public class InventorySlotsUI : MonoBehaviour
 {
-    public event Action<Guid> OnDescriptionCalled = (id) => { }; 
+    public event Action<SlotUIData> OnDescriptionCalled = (id) => { }; 
     public SlotHandlerUI SelectedSlotHandler { get; private set; }
 
     public bool Initialized { get; private set; }
@@ -32,19 +32,19 @@ public class InventorySlotsUI : MonoBehaviour
     {
         entityStuff = player.GetComponent<EntityStuffComponent>();
         _bagSlotHandlers = new List<SlotHandlerUI>();
-        entityStuff.Stuff.OnEntityStuffSlotChanged += (type, i) => UpdateSlot(_bagSlotHandlers[i]);
+        entityStuff.Stuff.OnUpdateSlot += (type, i) => UpdateSlot(_bagSlotHandlers[i]);
     }
     
     public void InitializeSlots()
     {
         InitializeBagSlots();
         Initialized = true;
-        //TODO new List<SlotHandlerUI>(){hadSlot, bodySlot, lagsSlot}.ForEach(InitializeSingleSlot);
+        new List<SlotHandlerUI>(){hadSlot, bodySlot, lagsSlot}.ForEach(InitializeSingleSlot);
     }
 
     private void InitializeSingleSlot(SlotHandlerUI slotHandler)
     {
-        slotHandler.Initialize(slotHandler.SlotType);
+        slotHandler.Initialize(slotHandler.Type);
         SubscribeToSlotEvents(slotHandler.GetComponentInChildren<ItemDragHandler>());
         UpdateSlot(slotHandler);
     }
@@ -70,8 +70,11 @@ public class InventorySlotsUI : MonoBehaviour
     private void SubscribeToSlotEvents(ItemDragHandler itemDragHandler)
     {
         itemDragHandler.OnItemStartHandling += ItemStartHandling;
-        //TODO itemDragHandler.OnDropItemInSlot += DropItemInSlot;
-        //TODO itemDragHandler.OnDescriptionCalled += () => { OnDescriptionCalled(entityStuff.Stuff.GetSlotGuid(SelectedSlotHandler)); };
+        itemDragHandler.OnDropItemInSlot += DropItemInSlot;
+        itemDragHandler.OnDescriptionCalled += () =>
+        {
+            OnDescriptionCalled(entityStuff.Stuff.GetSlotDescription(SelectedSlotHandler.Type, SelectedSlotHandler.Index));
+        };
     }
 
     public void UpdateBagSlots()
@@ -87,28 +90,29 @@ public class InventorySlotsUI : MonoBehaviour
         SelectedSlotHandler = slotHandler;
     }
     
-    /*public void DropItemInSlot(SlotHandlerUI slotHandler)
+    public void DropItemInSlot(SlotHandlerUI slotHandler)
     {
         if (SelectedSlotHandler != null)
         {
-            entityStuff.Stuff.ShiftFromSlotToSlot(SelectedSlotHandler, slotHandler);
+            entityStuff.Stuff.SwapSlots(slotHandler.Type, slotHandler.Index,
+                SelectedSlotHandler.Type, SelectedSlotHandler.Index);
             UpdateSlot(slotHandler);
             UpdateSlot(SelectedSlotHandler);
         }
-    }*/
+    }
     
-    /*public void DropSelectedItem()
+    public void DropSelectedItem()
     {
         if (SelectedSlotHandler != null)
         {
-            entityStuff.Stuff.DropItem(entityStuff.Stuff.GetSlotGuid(SelectedSlotHandler));
+            entityStuff.Stuff.DropItem(SelectedSlotHandler.Type, SelectedSlotHandler.Index);
             UpdateSlot(SelectedSlotHandler);
         }
-    }*/
+    }
 
     private void UpdateSlot(SlotHandlerUI slotHandler)
     {
-        var slotData = entityStuff.Stuff.GetSlotDescription(slotHandler.SlotType, slotHandler.SlotIndex);
+        var slotData = entityStuff.Stuff.GetSlotDescription(slotHandler.Type, slotHandler.Index);
         slotHandler.UpdateSlot(slotData);
     }
 }

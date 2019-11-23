@@ -12,9 +12,9 @@ namespace ItemSystem
     public class ItemsSet
     {
         /// <summary>
-        /// sand int index of updated slot
+        /// sand slotType and int index of updated slot
         /// </summary>
-        public event Action<int> OnUpdateSlot = (p) => { };
+        public event Action<SlotType, int> OnUpdateSlot = (st, index) => { };
 
         public int EmptyPlaces => _slots.Count(slot => slot.id != Guid.Empty);
         
@@ -23,6 +23,8 @@ namespace ItemSystem
         public int MaxSlotNumber { get;}
         
         private readonly List<Slot> _slots;
+
+        public IReadOnlyList<Slot> Slots => _slots;
 
         public ItemsSet(int maxSlotNumber, SlotType setType)
         {
@@ -59,31 +61,43 @@ namespace ItemSystem
                     _slots[slotIndex].number = fromNumber;
                     PutItemInEmptySlot(itemId);
                     AddItem(itemId);
-                    OnUpdateSlot(slotIndex);
+                    OnUpdateSlot(Type, slotIndex);
                     return true;
                 }
             }
             return false;
         }
 
+        public Slot GetSlot(int slotIndex)
+        {
+            var slot = new Slot(_slots[slotIndex].Type, slotIndex);
+            slot.SetSlot(_slots[slotIndex].id, _slots[slotIndex].number);
+            return slot;
+        }
+        
         public void RemoveItem(Guid id, int number = 1)
         {
             _slots.Find(slot => slot.id == id).Reset();
         }
 
-        public void RemoveItem(int slotIndex)
+        public Guid RemoveItem(int slotIndex)
         {
+            var id = _slots[slotIndex].id;
             _slots[slotIndex].Reset();
+            return id; 
         }
 
         public void SwapSlotsInSet(int firstIndex, int secondIndex)
         {
             _slots[firstIndex].Swap(_slots[secondIndex]);
+            OnUpdateSlot(Type, firstIndex);
+            OnUpdateSlot(Type, secondIndex);
         }
         
         public void SwapSlots(int index, Slot slot)
         {
             _slots[index].Swap(slot);
+            OnUpdateSlot(Type, index);
         }
 
         private bool PutItemInEmptySlot(Guid id, int number = 1)
@@ -103,7 +117,7 @@ namespace ItemSystem
             if (slotIndex < MaxSlotNumber && _slots[slotIndex].id == Guid.Empty)
             {
                 _slots[slotIndex].SetSlot(id, number);
-                OnUpdateSlot(slotIndex);
+                OnUpdateSlot(Type, slotIndex);
                 return true;
             }
             return false;
@@ -131,7 +145,7 @@ namespace ItemSystem
                     {
                         var emptyPlace = maxNumberInStack - _slots[i].number;
                         _slots[i].number += emptyPlace;
-                        OnUpdateSlot(i);
+                        OnUpdateSlot(Type, i);
                     }
                 }
                 return true;

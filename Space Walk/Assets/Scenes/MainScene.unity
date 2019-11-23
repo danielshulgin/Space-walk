@@ -365,7 +365,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1182266041}
-        m_MethodName: Pick
+        m_MethodName: PickUpItem
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2262,7 +2262,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityStuff: {fileID: 1182266041}
   active: 1
-  inventoryUi: {fileID: 1940146785}
+  InventorySlotsUI: {fileID: 1940146785}
 --- !u!114 &1940146787
 MonoBehaviour:
   m_ObjectHideFlags: 0

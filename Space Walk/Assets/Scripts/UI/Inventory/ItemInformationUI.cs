@@ -22,13 +22,12 @@ namespace UI
             _canvasGroup = GetComponent<CanvasGroup>();
         }
 
-        public void Activate(Guid id)
+        public void Activate(SlotUIData slotUiData)
         {
-            /*_canvasGroup.alpha = 1f;
+            _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
-            descriptionText.text = DataBase.instance.GetItem(id).ScriptableObject.description;
-            var item = DataBase.instance.GetItem(id);
-            if (item is ItemStack)
+            descriptionText.text = slotUiData.Description;
+            if (slotUiData.Stackable)
             {
                 splitButton.gameObject.SetActive(true);
                 slider.gameObject.SetActive(true);
@@ -37,7 +36,7 @@ namespace UI
             {
                 splitButton.gameObject.SetActive(false);
                 slider.gameObject.SetActive(false);
-            }*/
+            }
         }
         
         public void Split()
